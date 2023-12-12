@@ -1,5 +1,6 @@
 import { useState, useEffect } from "react";
 
+
 const API = import.meta.env.VITE_FETCH_DATA_API;
 
 const useFetchData = () => {
