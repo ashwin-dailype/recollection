@@ -8,7 +8,7 @@ const Navbar = () => {
       <Flex align="center" justify="center">
         {/* Use Link to navigate to the root route */}
         <Link to="/" style={{ textDecoration: "none" }}>
-          <Text fontSize="xl" fontWeight="bold" fontFamily="heading" cursor="pointer">
+          <Text fontSize="xl" fontWeight="bold" fontFamily="navBarHeading" cursor="pointer">
             DailyPe
           </Text>
         </Link>

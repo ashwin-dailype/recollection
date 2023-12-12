@@ -8,7 +8,7 @@ import "@fontsource/redressed";
 
 const theme = extendTheme({
   fonts: {
-    heading: `'Redressed', cursive`,
+    navBarHeading: `'Redressed', cursive`,
     body: `'poppins', sans-serif`,
   },
 });
