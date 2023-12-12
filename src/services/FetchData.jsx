@@ -25,6 +25,31 @@ const useFetchData = () => {
       }
     } catch (error) {
       console.error(error);
+      // If there's an error, prompt the user again for the token
+      promptUserForToken();
+    }
+  };
+
+  const calculateTimeUntilMidnight = () => {
+    const now = new Date();
+    const midnight = new Date(now);
+    midnight.setHours(24, 0, 0, 0);
+    return midnight - now;
+  };
+
+  const promptUserForToken = () => {
+    const userToken = prompt("Error fetching data. Enter Authorization Token:");
+
+    if (userToken) {
+      localStorage.setItem("authorizationToken", userToken);
+
+      const timeRemaining = calculateTimeUntilMidnight();
+
+      setTimeout(() => {
+        localStorage.removeItem("authorizationToken");
+      }, timeRemaining);
+
+      fetchLoanDetails(userToken);
     }
   };
 
@@ -34,17 +59,7 @@ const useFetchData = () => {
     if (storedToken) {
       fetchLoanDetails(storedToken);
     } else {
-      const userToken = prompt("Enter Authorization Token:");
-
-      if (userToken) {
-        localStorage.setItem("authorizationToken", userToken);
-
-        setTimeout(() => {
-          localStorage.removeItem("authorizationToken");
-        }, 24 * 60 * 60 * 1000);
-
-        fetchLoanDetails(userToken);
-      }
+      promptUserForToken();
     }
   }, []);
 
