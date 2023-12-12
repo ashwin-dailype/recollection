@@ -14,9 +14,10 @@ export default function ActionButtons({
           colorScheme="blue"
           variant="solid"
           px="50"
-          onClick={handleIncrease}
+          onClick={handleDecrease}
+          isDisabled={isDecreaseDisabled}
         >
-          +
+          -
         </Button>
       </GridItem>
       <Spacer />
@@ -25,10 +26,9 @@ export default function ActionButtons({
           colorScheme="blue"
           variant="solid"
           px="50"
-          onClick={handleDecrease}
-          isDisabled={isDecreaseDisabled}
+          onClick={handleIncrease}
         >
-          -
+          +
         </Button>
       </GridItem>
     </Grid>
