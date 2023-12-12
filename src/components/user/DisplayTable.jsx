@@ -1,7 +1,8 @@
-import React from "react";
+import React, { useState } from "react";
 import { useNavigate } from "react-router-dom";
 import {
   Button,
+  Icon,
   Table,
   Thead,
   Tbody,
@@ -10,11 +11,35 @@ import {
   Td,
   TableContainer,
 } from "@chakra-ui/react";
+import { ArrowDownIcon, ArrowUpIcon } from "@chakra-ui/icons";
 
 export default function DisplayTable({ users, search }) {
   const navigate = useNavigate(); // Import useNavigate instead of useHistory
+  const [sortField, setSortField] = useState("");
+  const [order, setOrder] = useState("asc");
 
-  const filteredUsers = users.filter(
+  const handleSortingChange = (field) => {
+    const sortOrder = field === sortField && order === "asc" ? "desc" : "asc";
+    setSortField(field);
+    setOrder(sortOrder);
+  };
+
+  const sortedUsers = [...users].sort((a, b) => {
+    const comparison = order === "asc" ? 1 : -1;
+    
+    const aStatus = sortField === "total_amount_pending" ? Number(a[sortField]) : String(a[sortField] || "");
+    const bStatus = sortField === "total_amount_pending" ? Number(b[sortField]) : String(b[sortField] || "");
+    
+    if (isNaN(aStatus) || isNaN(bStatus)) {
+      // Handle non-numeric values by comparing them as strings
+      return aStatus.localeCompare(bStatus) * comparison;
+    }
+  
+    return (aStatus - bStatus) * comparison;
+  });
+  
+
+  const filteredUsers = sortedUsers.filter(
     (user) =>
       user.fname.toLowerCase().includes(search.toLowerCase()) ||
       user.lname.toLowerCase().includes(search.toLowerCase()) ||
@@ -55,8 +80,21 @@ export default function DisplayTable({ users, search }) {
       <Table variant="striped" className="custom-table" size="sm">
         <Thead>
           <Tr>
-            <Th>Borrower</Th>
-            <Th>Amount</Th>
+            <Th onClick={() => handleSortingChange("fname")}>
+              Borrower{" "}
+              {sortField === "fname" && (
+                <Icon
+                  as={order === "asc" ? ArrowUpIcon : ArrowDownIcon}
+                  className="sort-icon"
+                />
+              )}
+            </Th>
+            <Th onClick={() => handleSortingChange("total_amount_pending")}>
+              Amount{" "}
+              {sortField === "total_amount_pending" && (
+                <Icon as={order === "asc" ? ArrowUpIcon : ArrowDownIcon} className="sort-icon" />
+              )}
+            </Th>
             <Th textAlign="center">Payment</Th>
           </Tr>
         </Thead>
