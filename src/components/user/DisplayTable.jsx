@@ -65,6 +65,7 @@ export default function DisplayTable({ users, search }) {
             const {
               user_id,
               loan_id,
+              total_amount_pending,
               single_installment_amt,
               fname,
               mname,
@@ -77,7 +78,7 @@ export default function DisplayTable({ users, search }) {
             return (
               <Tr key={loan_id} textAlign="center">
                 <Td className="truncate-cell">{borrowerName}</Td>
-                <Td>{single_installment_amt}</Td>
+                <Td>{total_amount_pending}</Td>
                 <Td textAlign="center">
                   <Button
                     colorScheme="orange"
