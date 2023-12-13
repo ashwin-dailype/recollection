@@ -20,17 +20,16 @@ export default function GetTokenInput() {
 
   const handleChange = (e) => {
     setAuthToken(e.target.value);
-    // Reset error when input changes
     setError(null);
   };
 
   const sendInput = async () => {
     setLoading(true);
     const API = import.meta.env.VITE_FETCH_DATA_API;
-    const query_type = "all_user_loan_collection_details";
+    const query_params = { query_type: "all_user_loan_collection_details" };
 
-    const result = await AgentService.checkToken(API, authToken, query_type);
-    
+    const result = await AgentService.checkToken(API, authToken, query_params);
+
     if (result[0]) {
       setLoading(false);
       setError(null);
@@ -44,26 +43,35 @@ export default function GetTokenInput() {
 
   return (
     <Flex align="center" justify="center" height="100vh">
-    <Card maxW="md" mx='2' boxShadow="lg" border="2px" borderColor="blue.500">
-    <CardHeader>
-        <Heading size="md">Enter your Authorization Token</Heading>
-      </CardHeader>
-      <CardBody>
-        <FormControl>
-          {error && <FormLabel htmlFor="authToken" colorScheme="red" color="red.500">{error}</FormLabel>}
-          <Input
-            id="authToken"
-            placeholder="Enter your token"
-            onChange={handleChange}
-          />
-        </FormControl>
-      </CardBody>
-      <CardFooter>
-        <Button colorScheme="blue" disabled={loading} onClick={sendInput} width="100%">
-          {loading ? "Loading..." : "Send"}
-        </Button>
-      </CardFooter>
-    </Card>
+      <Card maxW="md" mx="2" boxShadow="lg" border="2px" borderColor="blue.500">
+        <CardHeader>
+          <Heading size="md">Enter your Authorization Token</Heading>
+        </CardHeader>
+        <CardBody>
+          <FormControl>
+            {error && (
+              <FormLabel htmlFor="authToken" colorScheme="red" color="red.500">
+                {error}
+              </FormLabel>
+            )}
+            <Input
+              id="authToken"
+              placeholder="Enter your token"
+              onChange={handleChange}
+            />
+          </FormControl>
+        </CardBody>
+        <CardFooter>
+          <Button
+            colorScheme="blue"
+            disabled={loading}
+            onClick={sendInput}
+            width="100%"
+          >
+            {loading ? "Loading..." : "Send"}
+          </Button>
+        </CardFooter>
+      </Card>
     </Flex>
   );
 }

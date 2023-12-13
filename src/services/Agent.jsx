@@ -25,7 +25,7 @@ class AgentService {
     }, timeRemaining);
   }
 
-  static async checkToken(api, token, query_type) {
+  static async checkToken(api, token, query_params) {
     try {
       const res = await fetch(api, {
         method: "POST",
@@ -33,9 +33,7 @@ class AgentService {
           Authorization: token,
           "Content-Type": "application/json",
         },
-        body: JSON.stringify({
-          query_type: query_type,
-        }),
+        body: JSON.stringify(query_params),
       });
 
       const result = await res.json();

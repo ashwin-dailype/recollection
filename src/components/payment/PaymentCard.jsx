@@ -12,6 +12,7 @@ import {
 
 import AmountBox from "./AmountBox";
 import ActionButtons from "./ActionButtons";
+import AgentService from "../../services/Agent";
 
 export default function PaymentCard({
   user_id,
@@ -34,43 +35,36 @@ export default function PaymentCard({
 
   const handleGenerateQR = async () => {
     try {
-      const storedToken = localStorage.getItem("authorizationToken");
+      const storedToken = AgentService.getToken();
 
       if (!storedToken) {
         console.error("Authorization token not found.");
         return;
       }
 
-      // Set loading state to true
       setIsLoading(true);
 
-      const response = await fetch(
-        import.meta.env.VITE_GENERATE_QR,
-        {
-          method: "POST",
-          headers: {
-            Authorization: storedToken,
-            "Content-Type": "application/json",
-          },
-          body: JSON.stringify({
-            user_id: user_id,
-            loan_id: loan_id,
-            amount: Number(displayedAmt),
-          }),
-        }
+      const API = import.meta.env.VITE_GENERATE_QR;
+      const query_params = {
+        user_id: user_id,
+        loan_id: loan_id,
+        amount: Number(displayedAmt),
+      };
+
+      const result = await AgentService.checkToken(
+        API,
+        storedToken,
+        query_params
       );
-
-      const result = await response.json();
-
-      if (result && result.response && result.response.dynamic_qr) {
-        setQrCode(result.response.dynamic_qr);
+      if (result[0]) {
+        setIsLoading(false);
+        setQrCode(result[1]?.dynamic_qr);
       } else {
-        console.error("Dynamic QR code not found in API response.");
+        setIsLoading(false);
       }
     } catch (error) {
       console.error("Error generating QR code:", error.message);
     } finally {
-      // Set loading state back to false after handling response
       setIsLoading(false);
     }
   };
@@ -83,7 +77,7 @@ export default function PaymentCard({
             <>
               <Box
                 w="100%"
-                h="350px" // Set the height as per your requirement
+                h="350px"
                 bg={`url(data:image/png;base64,${qrCode})`}
                 backgroundSize="cover"
                 backgroundPosition="center"
@@ -107,7 +101,7 @@ export default function PaymentCard({
             colorScheme="blue"
             width="100%"
             onClick={handleGenerateQR}
-            disabled={isLoading} // Disable the button while loading
+            disabled={isLoading}
           >
             {isLoading ? "Loading..." : "Generate QR"}
           </Button>

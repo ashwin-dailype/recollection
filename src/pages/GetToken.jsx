@@ -11,7 +11,7 @@ export default function GetToken() {
   const [search, setSearch] = useState("");
 
   const API = import.meta.env.VITE_FETCH_DATA_API;
-  const query_type = "all_user_loan_collection_details";
+  const query_params = {query_type: "all_user_loan_collection_details"};
 
   const handleSearchChange = (searchTerm) => {
     setSearch(searchTerm);
@@ -23,7 +23,7 @@ export default function GetToken() {
         const check = await AgentService.checkToken(
           API,
           tokenToCheck,
-          query_type
+          query_params,
         );
         setToken(check[0]);
         setData(check[1]);
@@ -36,7 +36,7 @@ export default function GetToken() {
     if (storedToken) {
       checkToken(storedToken);
     }
-  }, [API, query_type]);
+  }, [API, query_params]);
 
   return (
     <>
