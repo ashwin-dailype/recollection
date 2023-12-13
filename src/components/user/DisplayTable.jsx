@@ -26,25 +26,42 @@ export default function DisplayTable({ users, search }) {
 
   const sortedUsers = [...users].sort((a, b) => {
     const comparison = order === "asc" ? 1 : -1;
-    
-    const aStatus = sortField === "total_amount_pending" ? Number(a[sortField]) : String(a[sortField] || "");
-    const bStatus = sortField === "total_amount_pending" ? Number(b[sortField]) : String(b[sortField] || "");
-    
+
+    const aStatus =
+      sortField === "total_amount_pending"
+        ? Number(a[sortField])
+        : String(a[sortField] || "");
+    const bStatus =
+      sortField === "total_amount_pending"
+        ? Number(b[sortField])
+        : String(b[sortField] || "");
+
     if (isNaN(aStatus) || isNaN(bStatus)) {
       // Handle non-numeric values by comparing them as strings
       return aStatus.localeCompare(bStatus) * comparison;
     }
-  
+
     return (aStatus - bStatus) * comparison;
   });
-  
 
-  const filteredUsers = sortedUsers.filter(
-    (user) =>
-      user.fname.toLowerCase().includes(search.toLowerCase()) ||
-      user.lname.toLowerCase().includes(search.toLowerCase()) ||
-      user.loan_acc_num.toLowerCase().includes(search.toLowerCase())
-  );
+  const searchTerm = search.toLowerCase().trim();
+  const searchWords = searchTerm.split(" ");
+
+  const filteredUsers = sortedUsers.filter((user) => {
+    const fname = user.fname?.toLowerCase() || "";
+    const mname = user.mname?.toLowerCase() || "";
+    const lname = user.lname?.toLowerCase() || "";
+    const loanAccNum = user.loan_acc_num?.toLowerCase() || "";
+
+    return searchWords.every((word) => {
+      return (
+        fname.includes(word) ||
+        mname.includes(word) ||
+        lname.includes(word) ||
+        loanAccNum.includes(word)
+      );
+    });
+  });
 
   const redirectToPaymentPage = (user) => {
     const { user_id, loan_id, single_installment_amt, fname, mname, lname } =
@@ -92,7 +109,10 @@ export default function DisplayTable({ users, search }) {
             <Th onClick={() => handleSortingChange("total_amount_pending")}>
               Amount{" "}
               {sortField === "total_amount_pending" && (
-                <Icon as={order === "asc" ? ArrowUpIcon : ArrowDownIcon} className="sort-icon" />
+                <Icon
+                  as={order === "asc" ? ArrowUpIcon : ArrowDownIcon}
+                  className="sort-icon"
+                />
               )}
             </Th>
             <Th textAlign="center">Payment</Th>
