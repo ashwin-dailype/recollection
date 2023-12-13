@@ -6,7 +6,7 @@ const Navbar = () => {
   return (
     <Box bg="#e0f4ff" p={4}>
       <Flex align="center" justify="center">
-        <Link to="/trial" style={{ textDecoration: "none" }}>
+        <Link to="/recollection" style={{ textDecoration: "none" }}>
           <Text fontSize="xl" fontWeight="bold" fontFamily="navBarHeading" cursor="pointer">
             DailyPe
           </Text>
