@@ -8,8 +8,8 @@ function App() {
     <BrowserRouter>
       <Navbar />
       <Routes>
-        <Route path="/trial" element={<GetToken />} />
-        <Route path="/trial/payment/:user_id/:loan_id/:loan_installment_amt" element={<MakePayments />} />
+        <Route path="/recollection" element={<GetToken />} />
+        <Route path="/recollection/payment/:user_id/:loan_id/:loan_installment_amt" element={<MakePayments />} />
       </Routes>
     </BrowserRouter>
   );
