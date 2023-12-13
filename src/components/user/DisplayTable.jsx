@@ -69,7 +69,7 @@ export default function DisplayTable({ users, search }) {
     const borrowerName = `${fname} ${mname ? mname + " " : ""}${lname || ""}`;
 
     // Redirect to the payment page with user_id, loan_id, and loan_installment_amt
-    navigate(`/payment/${user_id}/${loan_id}/${single_installment_amt}`);
+    navigate(`/trial/payment/${user_id}/${loan_id}/${single_installment_amt}`);
   };
 
   return (
