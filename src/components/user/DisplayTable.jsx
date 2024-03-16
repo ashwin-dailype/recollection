@@ -12,9 +12,10 @@ import {
   TableContainer,
 } from "@chakra-ui/react";
 import { ArrowDownIcon, ArrowUpIcon } from "@chakra-ui/icons";
+import AgentService from "../../services/Agent";
 
-export default function DisplayTable({ users, search }) {
-  const navigate = useNavigate(); // Import useNavigate instead of useHistory
+export default function DisplayTable({ users, search, buttonAction, setIsLoading }) {
+  const navigate = useNavigate();
   const [sortField, setSortField] = useState("");
   const [order, setOrder] = useState("asc");
 
@@ -37,7 +38,6 @@ export default function DisplayTable({ users, search }) {
         : String(b[sortField] || "");
 
     if (isNaN(aStatus) || isNaN(bStatus)) {
-      // Handle non-numeric values by comparing them as strings
       return aStatus.localeCompare(bStatus) * comparison;
     }
 
@@ -63,13 +63,80 @@ export default function DisplayTable({ users, search }) {
     });
   });
 
+  const handleClick = (user) => {
+    if (buttonAction === "loan") {
+      redirectToPaymentPage(user);
+    } else if (buttonAction === "notice") {
+      generateLetter(user);
+    }
+  };
+
   const redirectToPaymentPage = (user) => {
-    const { user_id, loan_id, single_installment_amt, fname, mname, lname } =
-      user;
-    const borrowerName = `${fname} ${mname ? mname + " " : ""}${lname || ""}`;
+    const { user_id, loan_id, single_installment_amt } = user;
 
     // Redirect to the payment page with user_id, loan_id, and loan_installment_amt
     navigate(`/recollection/payment/${user_id}/${loan_id}/${single_installment_amt}`);
+  };
+
+  const generateLetter = async (user) => {
+    try {
+      const storedToken = AgentService.getToken();
+  
+      if (!storedToken) {
+        console.error("Authorization token not found.");
+        return;
+      }
+  
+      const generateLetterAPI = import.meta.env.VITE_GENERATE_LETTER_NOTICE;
+      const { user_id, loan_id } = user;
+      const generateLetterRequestBody = {
+        doc_type: "notice",
+        user_id,
+        loan_id
+      };
+  
+      const generateLetterResponse = await fetch(generateLetterAPI, {
+        method: "POST",
+        headers: {
+          "Content-Type": "application/json",
+          "Authorization": storedToken
+        },
+        body: JSON.stringify(generateLetterRequestBody),
+      });
+  
+      if (!generateLetterResponse.ok) {
+        console.error("Failed to generate letter");
+        return;
+      }
+  
+      const getUserDocumentUrlAPI = import.meta.env.VITE_GET_USER_DOCUMENT_URL;
+      const getUserDocumentUrlRequestBody = {
+        user_id,
+        loan_id,
+        "all_images": true
+      };
+  
+      const getUserDocumentUrlResponse = await fetch(getUserDocumentUrlAPI, {
+        method: "POST",
+        headers: {
+          "Content-Type": "application/json",
+          "Authorization": storedToken
+        },
+        body: JSON.stringify(getUserDocumentUrlRequestBody),
+      });
+  
+      if (!getUserDocumentUrlResponse.ok) {
+        console.error("Failed to get user document URL");
+        return;
+      }
+  
+      const responseData = await getUserDocumentUrlResponse.json();
+      console.log(responseData.url.notice);
+
+      window.open(responseData.url.notice, "_blank");
+    } catch (error) {
+      console.error("Error:", error.message || error);
+    }
   };
 
   return (
@@ -115,7 +182,7 @@ export default function DisplayTable({ users, search }) {
                 />
               )}
             </Th>
-            <Th textAlign="center">Payment</Th>
+            <Th textAlign="center">{buttonAction === "loan" ? "Pay" : "Generate"}</Th>
           </Tr>
         </Thead>
         <Tbody>
@@ -141,9 +208,9 @@ export default function DisplayTable({ users, search }) {
                   <Button
                     colorScheme="orange"
                     px="7"
-                    onClick={() => redirectToPaymentPage(user)}
+                    onClick={() => handleClick(user)}
                   >
-                    Pay
+                    {buttonAction === "loan" ? "Pay" : "Generate"}
                   </Button>
                 </Td>
               </Tr>
