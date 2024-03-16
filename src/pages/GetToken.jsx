@@ -54,11 +54,11 @@ export default function GetToken() {
   return (
     <>
       {token ? (
-        <box>
+        <Box>
         <Box px="3" pt="150" display="flex" justifyContent="center" alignItems="center">
           {!showTable && ( // Render buttons if table is not shown
             <>
-            <Stack direction={isDesktop ? "row" : "column"} spacing={4}>
+            <Stack direction="row" spacing={4}>
               <Button onClick={handleLoanButtonClick} size="lg" fontSize="3xl" height="16" width="40">
                 Loan
               </Button>
@@ -73,7 +73,7 @@ export default function GetToken() {
           {showTable && (
             <DisplayTable users={data} search={search} buttonAction={buttonAction} />
           )}
-        </box>
+        </Box>
 
       ) : (
         <GetTokenInput />
