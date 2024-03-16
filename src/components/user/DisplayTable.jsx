@@ -112,7 +112,7 @@ export default function DisplayTable({ users, search, buttonAction, setIsLoading
       const body = JSON.parse(innerData.body);
       console.log(body)
       console.log(body.key);
-      console.log(body.bucket)
+      console.log(body.Bucket)
     } catch (error) {
       console.error("Error:", error.message || error);
     }
