@@ -1,5 +1,5 @@
 import React, { useEffect, useState } from "react";
-import { Box, Button } from "@chakra-ui/react";
+import { Box, Button, Stack, useBreakpointValue } from "@chakra-ui/react";
 import GetTokenInput from "../components/user/GetTokenInput";
 import AgentService from "../services/Agent";
 import SearchUser from "../components/user/SearchUser";
@@ -10,7 +10,7 @@ export default function GetToken() {
   const [data, setData] = useState(null);
   const [search, setSearch] = useState("");
   const [showTable, setShowTable] = useState(false);
-  const [buttonAction, setButtonAction] = useState(""); // New state to track which button is clicked
+  const [buttonAction, setButtonAction] = useState("");
 
   const API = import.meta.env.VITE_FETCH_DATA_API;
   const query_params = { query_type: "all_user_loan_collection_details" };
@@ -41,28 +41,30 @@ export default function GetToken() {
   }, [API, query_params]);
 
   const handleLoanButtonClick = () => {
-    // Show the table and set button action to "loan" when Loan button is clicked
     setShowTable(true);
     setButtonAction("loan");
   };
 
   const handleNoticeButtonClick = () => {
-    // Set button action to "notice" when Notice button is clicked
     setShowTable(true);
     setButtonAction("notice");
   };
+
+  const isDesktop = useBreakpointValue({ base: false, md: true });
 
   return (
     <>
       {token ? (
         <Box px="3">
-          {!showTable && ( // Render buttons if table is not shown
-            <>
-              <Button onClick={handleLoanButtonClick} mr={4}>
+          {!showTable && (
+            <Stack direction={isDesktop ? "row" : "column"} spacing={4}>
+              <Button onClick={handleLoanButtonClick} size={isDesktop ? "md" : "lg"}>
                 Loan
               </Button>
-              <Button onClick={handleNoticeButtonClick}>Notice</Button>
-            </>
+              <Button onClick={handleNoticeButtonClick} size={isDesktop ? "md" : "lg"}>
+                Notice
+              </Button>
+            </Stack>
           )}
           {showTable && (
             <DisplayTable users={data} search={search} buttonAction={buttonAction} />
