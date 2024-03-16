@@ -51,18 +51,19 @@ export default function GetToken() {
   return (
     <>
       {token ? (
-        <Box px="3">
-          <Button onClick={handleLoanButtonClick} mr={4}>
-            Loan
-          </Button>
-          <Button onClick={handleNoticeButtonClick}>Notice</Button>
-          {showTable && (
-            <>
-              <SearchUser onSearch={handleSearchChange} />
-              <DisplayTable users={data} search={search} />
-            </>
-          )}
-        </Box>
+        showTable ? (
+          <>
+            <SearchUser onSearch={handleSearchChange} />
+            <DisplayTable users={data} search={search} />
+          </>
+        ) : (
+          <Box px="3">
+            <Button onClick={handleLoanButtonClick} mr={4}>
+              Loan
+            </Button>
+            <Button onClick={handleNoticeButtonClick}>Notice</Button>
+          </Box>
+        )
       ) : (
         <GetTokenInput />
       )}
