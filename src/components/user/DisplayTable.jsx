@@ -13,8 +13,8 @@ import {
 } from "@chakra-ui/react";
 import { ArrowDownIcon, ArrowUpIcon } from "@chakra-ui/icons";
 
-export default function DisplayTable({ users, search }) {
-  const navigate = useNavigate(); // Import useNavigate instead of useHistory
+export default function DisplayTable({ users, search, buttonAction }) {
+  const navigate = useNavigate();
   const [sortField, setSortField] = useState("");
   const [order, setOrder] = useState("asc");
 
@@ -37,7 +37,6 @@ export default function DisplayTable({ users, search }) {
         : String(b[sortField] || "");
 
     if (isNaN(aStatus) || isNaN(bStatus)) {
-      // Handle non-numeric values by comparing them as strings
       return aStatus.localeCompare(bStatus) * comparison;
     }
 
@@ -63,12 +62,17 @@ export default function DisplayTable({ users, search }) {
     });
   });
 
-  const redirectToPaymentPage = (user) => {
-    const { user_id, loan_id, single_installment_amt, fname, mname, lname } =
-      user;
-    const borrowerName = `${fname} ${mname ? mname + " " : ""}${lname || ""}`;
+  const handleClick = (user) => {
+    if (buttonAction === "loan") {
+      redirectToPaymentPage(user);
+    } else if (buttonAction === "notice") {
+      // Implement logic for Notice button if needed
+      console.log("Generate notice logic goes here");
+    }
+  };
 
-    // Redirect to the payment page with user_id, loan_id, and loan_installment_amt
+  const redirectToPaymentPage = (user) => {
+    const { user_id, loan_id, single_installment_amt } = user;
     navigate(`/payment/${user_id}/${loan_id}/${single_installment_amt}`);
   };
 
@@ -115,7 +119,7 @@ export default function DisplayTable({ users, search }) {
                 />
               )}
             </Th>
-            <Th textAlign="center">Payment</Th>
+            <Th textAlign="center">{buttonAction === "loan" ? "Pay" : "Generate"}</Th>
           </Tr>
         </Thead>
         <Tbody>
@@ -139,11 +143,11 @@ export default function DisplayTable({ users, search }) {
                 <Td>{total_amount_pending}</Td>
                 <Td textAlign="center">
                   <Button
-                    colorScheme="orange"
+                    colorScheme={buttonAction === "loan" ? "orange" : "teal"}
                     px="7"
-                    onClick={() => redirectToPaymentPage(user)}
+                    onClick={() => handleClick(user)}
                   >
-                    Pay
+                    {buttonAction === "loan" ? "Pay" : "Generate"}
                   </Button>
                 </Td>
               </Tr>
