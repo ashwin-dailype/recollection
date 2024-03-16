@@ -113,6 +113,7 @@ export default function DisplayTable({ users, search, buttonAction, setIsLoading
         console.log("Letter generated successfully");
   
         const respData = JSON.parse(responseData.resp);
+        console.log(respData);
 
         // Access the 'key' field inside the parsed JSON object
         const key = respData.key;
