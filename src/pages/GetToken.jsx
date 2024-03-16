@@ -48,6 +48,7 @@ export default function GetToken() {
 
   const handleNoticeButtonClick = () => {
     // Set button action to "notice" when Notice button is clicked
+    setShowTable(true);
     setButtonAction("notice");
   };
 
