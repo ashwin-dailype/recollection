@@ -1,5 +1,5 @@
 import React, { useEffect, useState } from "react";
-import { Box, Button, Stack, useBreakpointValue, Center } from "@chakra-ui/react";
+import { Box, Button, Stack, useBreakpointValue } from "@chakra-ui/react";
 import GetTokenInput from "../components/user/GetTokenInput";
 import AgentService from "../services/Agent";
 import SearchUser from "../components/user/SearchUser";
@@ -55,18 +55,16 @@ export default function GetToken() {
   return (
     <>
       {token ? (
-        <Box px="3">
+        <Box px="3" display="flex" justifyContent="center" alignItems="center" height="100vh">
           {!showTable && (
-            <Center>
-              <Stack direction={isDesktop ? "row" : "column"} spacing={4}>
-                <Button onClick={handleLoanButtonClick} size={isDesktop ? "md" : "lg"}>
-                  Loan
-                </Button>
-                <Button onClick={handleNoticeButtonClick} size={isDesktop ? "md" : "lg"}>
-                  Notice
-                </Button>
-              </Stack>
-            </Center>
+            <Stack direction={isDesktop ? "row" : "column"} spacing={4}>
+              <Button onClick={handleLoanButtonClick} size={isDesktop ? "md" : "lg"}>
+                Loan
+              </Button>
+              <Button onClick={handleNoticeButtonClick} size={isDesktop ? "md" : "lg"}>
+                Notice
+              </Button>
+            </Stack>
           )}
           {showTable && (
             <DisplayTable users={data} search={search} buttonAction={buttonAction} />
