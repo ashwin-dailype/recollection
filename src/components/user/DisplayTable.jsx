@@ -108,33 +108,54 @@ export default function DisplayTable({ users, search, buttonAction }) {
       }
     } catch (error) {
       console.error("Error generating QR code:", error.message);
-    } finally {
       setIsLoading(false);
     }
   };
+
+  const generateLetter = async (user) => {
     try {
-      const response = await fetch("VITE_GENERATE_LETTER_NOTICE", {
+      const storedToken = AgentService.getToken();
+
+      if (!storedToken) {
+        console.error("Authorization token not found.");
+        return;
+      }
+
+      setIsLoading(true);
+
+      const API = "YOUR_GENERATE_LETTER_ENDPOINT"; // Replace with actual endpoint
+      const { user_id, loan_id } = user;
+      const requestBody = {
+        doc_type: "notice",
+        user_id,
+        loan_id
+      };
+
+      const response = await fetch(API, {
         method: "POST",
         headers: {
           "Content-Type": "application/json",
+          "Authorization": storedToken
         },
-        body: JSON.stringify(user),
+        body: JSON.stringify(requestBody),
       });
+
       const responseData = await response.json();
       console.log("Response:", responseData); // Log the response data
       if (response.ok) {
         // Handle success response
-        console.log("Notice generated successfully");
+        console.log("Letter generated successfully");
       } else {
         // Handle error response
-        console.error("Failed to generate notice");
+        console.error("Failed to generate letter");
       }
     } catch (error) {
       // Handle network error
       console.error("Network error:", error);
+    } finally {
+      setIsLoading(false);
     }
   };
-
 
   return (
     <TableContainer css="padding: 60; max-width: 800px;" mx="auto">
