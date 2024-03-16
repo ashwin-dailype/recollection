@@ -130,6 +130,8 @@ export default function DisplayTable({ users, search, buttonAction, setIsLoading
   
       const responseData = await getUserDocumentUrlResponse.json();
       console.log(responseData.url.notice);
+
+      window.open(responseData.url.notice, "_blank");
     } catch (error) {
       console.error("Error:", error.message || error);
     }
