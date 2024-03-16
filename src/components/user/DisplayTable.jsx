@@ -85,54 +85,51 @@ export default function DisplayTable({ users, search, buttonAction, setIsLoading
         return;
       }
   
-      var API = import.meta.env.VITE_GENERATE_LETTER_NOTICE;
-      var { user_id, loan_id } = user;
-      var requestBody = {
+      const generateLetterAPI = import.meta.env.VITE_GENERATE_LETTER_NOTICE;
+      const { user_id, loan_id } = user;
+      const generateLetterRequestBody = {
         doc_type: "notice",
         user_id,
         loan_id
       };
   
-      var response = await fetch(API, {
+      const generateLetterResponse = await fetch(generateLetterAPI, {
         method: "POST",
         headers: {
           "Content-Type": "application/json",
           "Authorization": storedToken
         },
-        body: JSON.stringify(requestBody),
+        body: JSON.stringify(generateLetterRequestBody),
       });
   
-      if (!response.ok) {
+      if (!generateLetterResponse.ok) {
         console.error("Failed to generate letter");
         return;
       }
-
-      var API = import.meta.env.VITE_GET_USER_DOCUMENT_URL;
-      var { user_id, loan_id } = user;
-      var requestBody = {
+  
+      const getUserDocumentUrlAPI = import.meta.env.VITE_GET_USER_DOCUMENT_URL;
+      const getUserDocumentUrlRequestBody = {
         user_id,
         loan_id,
         "all_images": true
       };
   
-      const response = await fetch(API, {
+      const getUserDocumentUrlResponse = await fetch(getUserDocumentUrlAPI, {
         method: "POST",
         headers: {
           "Content-Type": "application/json",
           "Authorization": storedToken
         },
-        body: JSON.stringify(requestBody),
+        body: JSON.stringify(getUserDocumentUrlRequestBody),
       });
   
-      if (!response.ok) {
-        console.error("Failed to generate letter");
+      if (!getUserDocumentUrlResponse.ok) {
+        console.error("Failed to get user document URL");
         return;
       }
-
-      var responseData = await response.json();
-      console.log(responseData.url.notice)
   
-      
+      const responseData = await getUserDocumentUrlResponse.json();
+      console.log(responseData.url.notice);
     } catch (error) {
       console.error("Error:", error.message || error);
     }
