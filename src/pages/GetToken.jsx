@@ -58,10 +58,10 @@ export default function GetToken() {
         <Box px="3" display="flex" justifyContent="center" alignItems="center" height="100vh">
           {!showTable && (
             <Stack direction={isDesktop ? "row" : "column"} spacing={4}>
-              <Button onClick={handleLoanButtonClick} size={isDesktop ? "md" : "lg"}>
+              <Button onClick={handleLoanButtonClick} size="lg">
                 Loan
               </Button>
-              <Button onClick={handleNoticeButtonClick} size={isDesktop ? "md" : "lg"}>
+              <Button onClick={handleNoticeButtonClick} size="lg">
                 Notice
               </Button>
             </Stack>
