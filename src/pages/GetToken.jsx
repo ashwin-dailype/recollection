@@ -55,9 +55,7 @@ export default function GetToken() {
   return (
     <>
       {token ? (
-        <Box px="3">DailyPe
-
-
+        <Box px="3">
           {!showTable && ( // Render buttons if table is not shown
             <Box display="flex" justifyContent="center" alignItems="center" pt="200">
               <Button colorScheme="orange" onClick={handleLoanButtonClick} mr={4}>
