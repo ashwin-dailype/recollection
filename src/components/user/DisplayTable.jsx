@@ -112,9 +112,15 @@ export default function DisplayTable({ users, search, buttonAction, setIsLoading
         // Handle success response
         console.log("Letter generated successfully");
   
-        // Try to access the key property
-        const key = responseData.body.key;
-        console.log("Key:", key);
+        const respData = JSON.parse(responseData.resp);
+
+        // Access the 'key' field inside the parsed JSON object
+        const key = respData.key;
+        if (key) {
+          console.log("Key:", key);
+        } else {
+          console.error("Key not found in response body");
+        }
       } else {
         // Handle error response
         console.error("Failed to generate letter");
