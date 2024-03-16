@@ -85,12 +85,34 @@ export default function DisplayTable({ users, search, buttonAction, setIsLoading
         return;
       }
   
-      const API = import.meta.env.VITE_GENERATE_LETTER_NOTICE;
-      const { user_id, loan_id } = user;
-      const requestBody = {
+      var API = import.meta.env.VITE_GENERATE_LETTER_NOTICE;
+      var { user_id, loan_id } = user;
+      var requestBody = {
         doc_type: "notice",
         user_id,
         loan_id
+      };
+  
+      var response = await fetch(API, {
+        method: "POST",
+        headers: {
+          "Content-Type": "application/json",
+          "Authorization": storedToken
+        },
+        body: JSON.stringify(requestBody),
+      });
+  
+      if (!response.ok) {
+        console.error("Failed to generate letter");
+        return;
+      }
+
+      var API = import.meta.env.VITE_GET_USER_DOCUMENT_URL;
+      var { user_id, loan_id } = user;
+      var requestBody = {
+        user_id,
+        loan_id,
+        "all_images": true
       };
   
       const response = await fetch(API, {
@@ -106,13 +128,11 @@ export default function DisplayTable({ users, search, buttonAction, setIsLoading
         console.error("Failed to generate letter");
         return;
       }
+
+      var responseData = await response.json();
+      console.log(responseData.url.notice)
   
-      const responseData = await response.json();
-      const innerData = JSON.parse(responseData.resp);
-      const body = JSON.parse(innerData.body);
-      console.log(body)
-      console.log(body.key);
-      console.log(body.Bucket)
+      
     } catch (error) {
       console.error("Error:", error.message || error);
     }
