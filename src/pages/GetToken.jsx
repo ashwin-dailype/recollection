@@ -4,6 +4,7 @@ import GetTokenInput from "../components/user/GetTokenInput";
 import AgentService from "../services/Agent";
 import SearchUser from "../components/user/SearchUser";
 import DisplayTable from "../components/user/DisplayTable";
+import MenuSelection from "./MenuSelection";
 
 export default function GetToken() {
   const [token, setToken] = useState(null);
@@ -41,10 +42,11 @@ export default function GetToken() {
   return (
     <>
       {token ? (
-        <Box px="3">
-          <SearchUser onSearch={handleSearchChange} />
-          <DisplayTable users={data} search={search} />
-        </Box>
+        <MenuSelection />
+        // <Box px="3">
+        //   <SearchUser onSearch={handleSearchChange} />
+        //   <DisplayTable users={data} search={search} />
+        // </Box>
       ) : (
         <GetTokenInput />
       )}
