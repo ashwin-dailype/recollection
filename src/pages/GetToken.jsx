@@ -54,6 +54,7 @@ export default function GetToken() {
   return (
     <>
       {token ? (
+        <box>
         <Box px="3" display="flex" justifyContent="center" alignItems="center">
           {!showTable && ( // Render buttons if table is not shown
             <>
@@ -68,6 +69,8 @@ export default function GetToken() {
           {showTable && (
             <DisplayTable users={data} search={search} buttonAction={buttonAction} />
           )}
+        </box>
+
       ) : (
         <GetTokenInput />
       )}
