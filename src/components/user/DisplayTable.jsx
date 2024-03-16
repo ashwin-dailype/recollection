@@ -75,7 +75,7 @@ export default function DisplayTable({ users, search, buttonAction, setIsLoading
     const { user_id, loan_id, single_installment_amt } = user;
 
     // Redirect to the payment page with user_id, loan_id, and loan_installment_amt
-    navigate(`/recollection/payment/${user_id}/${loan_id}/${single_installment_amt}`);
+    navigate(`/payment/${user_id}/${loan_id}/${single_installment_amt}`);
   };
 
   const generateLetter = async (user) => {
