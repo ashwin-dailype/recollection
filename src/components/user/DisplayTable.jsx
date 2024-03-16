@@ -104,15 +104,13 @@ export default function DisplayTable({ users, search, buttonAction, setIsLoading
   
       const responseData = await response.json();
       console.log("Response:", responseData); // Log the response data
-      
-      // Log the entire responseData object to understand its structure
-      console.log("Response Data Structure:", responseData);
-  
+        
       if (response.ok) {
         // Handle success response
         console.log("Letter generated successfully");
         try{
         const body = JSON.parse(responseData.body); // Parse the body JSON string
+        log.info(body)
         const respData = JSON.parse(body.resp); // Parse the resp JSON string
         const key = respData.key; // Access the key field
       
