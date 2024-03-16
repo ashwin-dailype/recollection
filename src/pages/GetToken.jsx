@@ -1,5 +1,5 @@
 import React, { useEffect, useState } from "react";
-import { Box, Button, Stack } from "@chakra-ui/react";
+import { Box, Button } from "@chakra-ui/react";
 import GetTokenInput from "../components/user/GetTokenInput";
 import AgentService from "../services/Agent";
 import SearchUser from "../components/user/SearchUser";
@@ -58,14 +58,10 @@ export default function GetToken() {
         <Box px="3" pt="150" display="flex" justifyContent="center" alignItems="center">
           {!showTable && ( // Render buttons if table is not shown
             <>
-            <Stack direction="row" spacing={4}>
-              <Button onClick={handleLoanButtonClick} size="lg" fontSize="3xl" height="16" width="40">
+              <Button onClick={handleLoanButtonClick} mr={4}>
                 Loan
               </Button>
-              <Button onClick={handleNoticeButtonClick} size="lg" fontSize="3xl" height="16" width="40">
-                Notice
-              </Button>
-            </Stack>
+              <Button onClick={handleNoticeButtonClick}>Notice</Button>
             </>
           )}
 
