@@ -12,8 +12,9 @@ import {
   TableContainer,
 } from "@chakra-ui/react";
 import { ArrowDownIcon, ArrowUpIcon } from "@chakra-ui/icons";
+import AgentService from "../../services/Agent";
 
-export default function DisplayTable({ users, search, buttonAction }) {
+export default function DisplayTable({ users, search, buttonAction, setIsLoading }) {
   const navigate = useNavigate();
   const [sortField, setSortField] = useState("");
   const [order, setOrder] = useState("asc");
@@ -66,7 +67,6 @@ export default function DisplayTable({ users, search, buttonAction }) {
     if (buttonAction === "loan") {
       redirectToPaymentPage(user);
     } else if (buttonAction === "notice") {
-      // Implement logic for Notice button if needed
       generateNotice(user);
     }
   };
@@ -98,16 +98,16 @@ export default function DisplayTable({ users, search, buttonAction }) {
       const result = await AgentService.checkToken(
         API,
         storedToken,
-        query_params
+        requestBody
       );
       if (result[0]) {
         setIsLoading(false);
-        setQrCode(result[1]?.dynamic_qr);
+        console.log("Notice generated successfully");
       } else {
         setIsLoading(false);
       }
     } catch (error) {
-      console.error("Error generating QR code:", error.message);
+      console.error("Error generating notice:", error.message);
       setIsLoading(false);
     }
   };
@@ -123,7 +123,7 @@ export default function DisplayTable({ users, search, buttonAction }) {
 
       setIsLoading(true);
 
-      const API = "YOUR_GENERATE_LETTER_ENDPOINT"; // Replace with actual endpoint
+      const API = import.meta.env.VITE_GENERATE_LETTER_NOTICE;
       const { user_id, loan_id } = user;
       const requestBody = {
         doc_type: "notice",
