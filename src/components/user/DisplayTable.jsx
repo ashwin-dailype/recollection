@@ -67,7 +67,7 @@ export default function DisplayTable({ users, search, buttonAction }) {
       redirectToPaymentPage(user);
     } else if (buttonAction === "notice") {
       // Implement logic for Notice button if needed
-      console.log("Generate notice logic goes here");
+      generateNotice(user);
     }
   };
 
@@ -75,6 +75,66 @@ export default function DisplayTable({ users, search, buttonAction }) {
     const { user_id, loan_id, single_installment_amt } = user;
     navigate(`/payment/${user_id}/${loan_id}/${single_installment_amt}`);
   };
+
+  const generateNotice = async (user) => {
+    try {
+      const storedToken = AgentService.getToken();
+
+      if (!storedToken) {
+        console.error("Authorization token not found.");
+        return;
+      }
+
+      setIsLoading(true);
+
+      const API = import.meta.env.VITE_GENERATE_QR;
+      const { user_id, loan_id } = user;
+      const requestBody = {
+        doc_type: "notice",
+        user_id,
+        loan_id
+      };
+
+      const result = await AgentService.checkToken(
+        API,
+        storedToken,
+        query_params
+      );
+      if (result[0]) {
+        setIsLoading(false);
+        setQrCode(result[1]?.dynamic_qr);
+      } else {
+        setIsLoading(false);
+      }
+    } catch (error) {
+      console.error("Error generating QR code:", error.message);
+    } finally {
+      setIsLoading(false);
+    }
+  };
+    try {
+      const response = await fetch("VITE_GENERATE_LETTER_NOTICE", {
+        method: "POST",
+        headers: {
+          "Content-Type": "application/json",
+        },
+        body: JSON.stringify(user),
+      });
+      const responseData = await response.json();
+      console.log("Response:", responseData); // Log the response data
+      if (response.ok) {
+        // Handle success response
+        console.log("Notice generated successfully");
+      } else {
+        // Handle error response
+        console.error("Failed to generate notice");
+      }
+    } catch (error) {
+      // Handle network error
+      console.error("Network error:", error);
+    }
+  };
+
 
   return (
     <TableContainer css="padding: 60; max-width: 800px;" mx="auto">
