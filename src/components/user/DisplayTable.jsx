@@ -102,32 +102,19 @@ export default function DisplayTable({ users, search, buttonAction, setIsLoading
         body: JSON.stringify(requestBody),
       });
   
-      const responseData = await response.json();
-      console.log("Response:", responseData); // Log the response data
-      const innerData = JSON.parse(responseData.resp);
-      console.log("Inner Data:", innerData); 
-      const body = JSON.parse(innerData.body)
-      console.log(body.key)
-        
-      if (response.ok) {
-        console.log("Letter generated successfully");
-        try{
-        const body = JSON.parse(responseData.body); // Parse the body JSON string
-        log.info(body)
-        const respData = JSON.parse(body.resp); // Parse the resp JSON string
-        const key = respData.key; // Access the key field
-      
-        console.log("Key:", key); // Log the key value
-      } catch (error) {
-        console.error("Error parsing response:", error);
-      }
-      } else {
-        // Handle error response
+      if (!response.ok) {
         console.error("Failed to generate letter");
+        return;
       }
+  
+      const responseData = await response.json();
+      const innerData = JSON.parse(responseData.resp);
+      const body = JSON.parse(innerData.body);
+      console.log(body)
+      console.log(body.key);
+      console.log(body.bucket)
     } catch (error) {
-      // Handle network error
-      console.error("Network error:", error);
+      console.error("Error:", error.message || error);
     }
   };
 
