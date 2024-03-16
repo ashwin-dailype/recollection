@@ -8,7 +8,7 @@ function App() {
     <BrowserRouter>
       <Navbar />
       <Routes>
-        <Route path="/" element={<GetToken />} />
+        <Route path="/recollection" element={<GetToken />} />
         <Route path="/payment/:user_id/:loan_id/:loan_installment_amt" element={<MakePayments />} />
       </Routes>
     </BrowserRouter>
