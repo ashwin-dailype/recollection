@@ -115,14 +115,12 @@ export default function DisplayTable({ users, search, buttonAction, setIsLoading
   const generateLetter = async (user) => {
     try {
       const storedToken = AgentService.getToken();
-
+  
       if (!storedToken) {
         console.error("Authorization token not found.");
         return;
       }
-
-      setIsLoading(true);
-
+  
       const API = import.meta.env.VITE_GENERATE_LETTER_NOTICE;
       const { user_id, loan_id } = user;
       const requestBody = {
@@ -130,7 +128,7 @@ export default function DisplayTable({ users, search, buttonAction, setIsLoading
         user_id,
         loan_id
       };
-
+  
       const response = await fetch(API, {
         method: "POST",
         headers: {
@@ -139,7 +137,7 @@ export default function DisplayTable({ users, search, buttonAction, setIsLoading
         },
         body: JSON.stringify(requestBody),
       });
-
+  
       const responseData = await response.json();
       console.log("Response:", responseData); // Log the response data
       if (response.ok) {
@@ -152,8 +150,6 @@ export default function DisplayTable({ users, search, buttonAction, setIsLoading
     } catch (error) {
       // Handle network error
       console.error("Network error:", error);
-    } finally {
-      setIsLoading(false);
     }
   };
 
