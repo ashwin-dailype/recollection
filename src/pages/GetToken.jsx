@@ -55,7 +55,7 @@ export default function GetToken() {
     <>
       {token ? (
         <box>
-        <Box px="3" display="flex" justifyContent="center" alignItems="center">
+        <Box px="3" pt="50" display="flex" justifyContent="center" alignItems="center">
           {!showTable && ( // Render buttons if table is not shown
             <>
               <Button onClick={handleLoanButtonClick} mr={4}>
