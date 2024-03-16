@@ -50,18 +50,18 @@ export default function GetToken() {
     setButtonAction("notice");
   };
 
-  const buttonSize = useBreakpointValue({ base: "lg", lg: "xl" });
+  const isDesktop = useBreakpointValue({ base: false, lg: true });
 
   return (
     <>
       {token ? (
-        <Box px="3">
+        <Box px="3" display="flex" justifyContent="center" alignItems="center" height="100vh">
           {!showTable && (
-            <Stack direction={{ base: "column", lg: "row" }} spacing={4}>
-              <Button onClick={handleLoanButtonClick} size={buttonSize}>
+            <Stack direction={isDesktop ? "row" : "column"} spacing={4}>
+              <Button onClick={handleLoanButtonClick} size="lg" fontSize={isDesktop ? "3xl" : "2xl"} height={isDesktop ? "16" : "14"} width={isDesktop ? "40" : "32"}>
                 Loan
               </Button>
-              <Button onClick={handleNoticeButtonClick} size={buttonSize}>
+              <Button onClick={handleNoticeButtonClick} size="lg" fontSize={isDesktop ? "3xl" : "2xl"} height={isDesktop ? "16" : "14"} width={isDesktop ? "40" : "32"}>
                 Notice
               </Button>
             </Stack>
