@@ -106,7 +106,8 @@ export default function DisplayTable({ users, search, buttonAction, setIsLoading
       console.log("Response:", responseData); // Log the response data
       const innerData = JSON.parse(responseData.resp);
       console.log("Inner Data:", innerData); 
-      console.log(innerData.Key)// `Log the inner data
+      const body = JSON.parse(innerData.body)
+      console.log(body)
         
       if (response.ok) {
         console.log("Letter generated successfully");
