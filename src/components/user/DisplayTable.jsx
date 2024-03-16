@@ -67,49 +67,13 @@ export default function DisplayTable({ users, search, buttonAction, setIsLoading
     if (buttonAction === "loan") {
       redirectToPaymentPage(user);
     } else if (buttonAction === "notice") {
-      generateNotice(user);
+      generateLetter(user);
     }
   };
 
   const redirectToPaymentPage = (user) => {
     const { user_id, loan_id, single_installment_amt } = user;
     navigate(`/payment/${user_id}/${loan_id}/${single_installment_amt}`);
-  };
-
-  const generateNotice = async (user) => {
-    try {
-      const storedToken = AgentService.getToken();
-
-      if (!storedToken) {
-        console.error("Authorization token not found.");
-        return;
-      }
-
-      setIsLoading(true);
-
-      const API = import.meta.env.VITE_GENERATE_QR;
-      const { user_id, loan_id } = user;
-      const requestBody = {
-        doc_type: "notice",
-        user_id,
-        loan_id
-      };
-
-      const result = await AgentService.checkToken(
-        API,
-        storedToken,
-        requestBody
-      );
-      if (result[0]) {
-        setIsLoading(false);
-        console.log("Notice generated successfully");
-      } else {
-        setIsLoading(false);
-      }
-    } catch (error) {
-      console.error("Error generating notice:", error.message);
-      setIsLoading(false);
-    }
   };
 
   const generateLetter = async (user) => {
