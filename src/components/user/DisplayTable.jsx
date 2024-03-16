@@ -103,7 +103,7 @@ export default function DisplayTable({ users, search, buttonAction, setIsLoading
       });
   
       const responseData = await response.json();
-      console.log("Response:", responseData); // Log the response data
+      console.log("Response:", typeof(responseData)); // Log the response data
         
       if (response.ok) {
         // Handle success response
