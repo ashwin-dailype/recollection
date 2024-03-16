@@ -143,7 +143,7 @@ export default function DisplayTable({ users, search, buttonAction }) {
                 <Td>{total_amount_pending}</Td>
                 <Td textAlign="center">
                   <Button
-                    colorScheme={buttonAction === "loan" ? "orange" : "teal"}
+                    colorScheme="orange"
                     px="7"
                     onClick={() => handleClick(user)}
                   >
