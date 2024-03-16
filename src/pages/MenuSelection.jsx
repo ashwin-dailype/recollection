@@ -5,8 +5,8 @@ function MenuSelection() {
     return (
         <ChakraProvider>
           <HStack spacing={4}>
-            <Button colorScheme="blue">Button 1</Button>
-            <Button colorScheme="green">Button 2</Button>
+          <Button colorScheme='teal' variant='outline'>Pay Loan Installments</Button>
+          <Button colorScheme='teal' variant='outline'>Notice Generation</Button>
           </HStack>
         </ChakraProvider>
       );
