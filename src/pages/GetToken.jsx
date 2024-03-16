@@ -57,11 +57,11 @@ export default function GetToken() {
       {token ? (
         <Box px="3">
           {!showTable && ( // Render buttons if table is not shown
-            <Box display="flex" justifyContent="center" alignItems="center">
-              <Button onClick={handleLoanButtonClick} mr={4}>
+            <Box display="flex" justifyContent="center" alignItems="center" pt="200">
+              <Button colorScheme="orange" onClick={handleLoanButtonClick} mr={4}>
                 Loan
               </Button>
-              <Button onClick={handleNoticeButtonClick}>Notice</Button>
+              <Button colorScheme="orange" onClick={handleNoticeButtonClick}>Notice</Button>
             </Box>
           )}
           {showTable && (
