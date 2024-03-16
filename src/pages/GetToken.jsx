@@ -4,7 +4,6 @@ import GetTokenInput from "../components/user/GetTokenInput";
 import AgentService from "../services/Agent";
 import SearchUser from "../components/user/SearchUser";
 import DisplayTable from "../components/user/DisplayTable";
-import MenuSelection from "./MenuSelection";
 
 export default function GetToken() {
   const [token, setToken] = useState(null);
@@ -29,8 +28,6 @@ export default function GetToken() {
         );
         setToken(check[0]);
         setData(check[1]);
-        // If token is available, show the Loan and Notice buttons
-        setShowTable(true);
       } catch (error) {
         console.error("Error checking token:", error);
       }
@@ -43,7 +40,7 @@ export default function GetToken() {
   }, [API, query_params]);
 
   const handleLoanButtonClick = () => {
-    // Show the table and search components
+    // Show the table and search components when Loan button is clicked
     setShowTable(true);
   };
 
