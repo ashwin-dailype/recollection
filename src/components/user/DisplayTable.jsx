@@ -107,6 +107,13 @@ export default function DisplayTable({ users, search, buttonAction, setIsLoading
       if (response.ok) {
         // Handle success response
         console.log("Letter generated successfully");
+        const parsedResponse = JSON.parse(responseData);
+
+        // Extract the key value
+        const key = parsedResponse.body.key;
+        
+        // Log the key value
+        console.log(key);
       } else {
         // Handle error response
         console.error("Failed to generate letter");
