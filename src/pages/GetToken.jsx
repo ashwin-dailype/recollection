@@ -1,5 +1,5 @@
 import React, { useEffect, useState } from "react";
-import { Box, Button, Stack, useBreakpointValue } from "@chakra-ui/react";
+import { Box, Button } from "@chakra-ui/react";
 import GetTokenInput from "../components/user/GetTokenInput";
 import AgentService from "../services/Agent";
 import SearchUser from "../components/user/SearchUser";
@@ -10,7 +10,7 @@ export default function GetToken() {
   const [data, setData] = useState(null);
   const [search, setSearch] = useState("");
   const [showTable, setShowTable] = useState(false);
-  const [buttonAction, setButtonAction] = useState("");
+  const [buttonAction, setButtonAction] = useState(""); // New state to track which button is clicked
 
   const API = import.meta.env.VITE_FETCH_DATA_API;
   const query_params = { query_type: "all_user_loan_collection_details" };
@@ -41,33 +41,30 @@ export default function GetToken() {
   }, [API, query_params]);
 
   const handleLoanButtonClick = () => {
+    // Show the table and set button action to "loan" when Loan button is clicked
     setShowTable(true);
     setButtonAction("loan");
   };
 
   const handleNoticeButtonClick = () => {
-    setShowTable(true);
+    // Set button action to "notice" when Notice button is clicked
     setButtonAction("notice");
   };
-
-  const isDesktop = useBreakpointValue({ base: false, lg: true });
 
   return (
     <>
       {token ? (
-        <Box px="3" display="flex" justifyContent="center" alignItems="center" height="100vh">
-          <Stack direction={isDesktop ? "row" : "column"} spacing={4}>
-            <Button onClick={handleLoanButtonClick} colorScheme="orange" size="lg" fontSize={isDesktop ? "3xl" : "2xl"} height={isDesktop ? "16" : "14"} width={isDesktop ? "40" : "32"}>
-              Loan
-            </Button>
-            <Button onClick={handleNoticeButtonClick} colorScheme="orange" size="lg" fontSize={isDesktop ? "3xl" : "2xl"} height={isDesktop ? "16" : "14"} width={isDesktop ? "40" : "32"}>
-              Notice
-            </Button>
-          </Stack>
+        <Box px="3">
+          {!showTable && ( // Render buttons if table is not shown
+            <>
+              <Button onClick={handleLoanButtonClick} mr={4}>
+                Loan
+              </Button>
+              <Button onClick={handleNoticeButtonClick}>Notice</Button>
+            </>
+          )}
           {showTable && (
-            <Box mt={8}> {/* Add margin to separate the DisplayTable */}
-              <DisplayTable users={data} search={search} buttonAction={buttonAction} />
-            </Box>
+            <DisplayTable users={data} search={search} buttonAction={buttonAction} />
           )}
         </Box>
       ) : (
