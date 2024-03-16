@@ -58,20 +58,10 @@ export default function GetToken() {
         <Box px="3" display="flex" justifyContent="center" alignItems="center" height="100vh">
           {!showTable && (
             <Stack direction={isDesktop ? "row" : "column"} spacing={4}>
-              <Button
-                onClick={handleLoanButtonClick}
-                size={isDesktop ? "lg" : "md"} // Adjust size based on the breakpoint
-                fontSize={isDesktop ? "xl" : "lg"} // Increase font size for larger button
-                height={isDesktop ? "14" : "12"} // Increase height for larger button
-              >
+              <Button onClick={handleLoanButtonClick} size={isDesktop ? "lg" : "lg"}>
                 Loan
               </Button>
-              <Button
-                onClick={handleNoticeButtonClick}
-                size={isDesktop ? "lg" : "md"} // Adjust size based on the breakpoint
-                fontSize={isDesktop ? "xl" : "lg"} // Increase font size for larger button
-                height={isDesktop ? "14" : "12"} // Increase height for larger button
-              >
+              <Button onClick={handleNoticeButtonClick} size="lg">
                 Notice
               </Button>
             </Stack>
