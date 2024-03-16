@@ -42,6 +42,8 @@ jobs:
         env:
           VITE_FETCH_DATA_API: ${{ secrets.VITE_FETCH_DATA_API }}
           VITE_GENERATE_QR: ${{ secrets.VITE_GENERATE_QR }}
+          VITE_GENERATE_LETTER_NOTICE: ${{ secrets.VITE_GENERATE_LETTER_NOTICE }}
+          VITE_GET_USER_DOCUMENT_URL: ${{ secrets.VITE_GET_USER_DOCUMENT_URL }}
       - name: Setup Pages
         uses: actions/configure-pages@v3
       - name: Upload artifact

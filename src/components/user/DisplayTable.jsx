@@ -89,7 +89,6 @@ export default function DisplayTable({ users, search, buttonAction, setIsLoading
   
       const generateLetterAPI = import.meta.env.VITE_GENERATE_LETTER_NOTICE;
       const { user_id, loan_id } = user;
-      console.log(user_id)
       const generateLetterRequestBody = {
         doc_type: "notice",
         user_id,
