@@ -11,7 +11,7 @@ export async function signInAccount(user: { authToken: string }) {
       headers: {
         'Content-Type': 'application/json',
         // Pass the authToken in the Authorization header
-        'Authorization': `Bearer ${user.authToken}`,
+        'Authorization': `${user.authToken}`,
       },
       body: JSON.stringify({
         query_type: "all_user_loan_collection_details"
