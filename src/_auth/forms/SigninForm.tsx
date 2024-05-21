@@ -29,7 +29,7 @@ const SigninForm = () => {
   });
 
   const handleSignin = async (user: z.infer<typeof SigninValidation>) => {
-    const response = await signInAccount(user);
+    const response = await signInAccount(user) as Response;
 
     if (!response.ok) {
       toast({ title: "Login failed. Please try again." });
@@ -39,17 +39,17 @@ const SigninForm = () => {
 
     navigate("/");
 
-    // const isLoggedIn = await checkAuthUser();
+    const isLoggedIn = await checkAuthUser();
 
-    // if (isLoggedIn) {
-    //   form.reset();
+    if (isLoggedIn) {
+      form.reset();
 
-    //   navigate("/");
-    // } else {
-    //   toast({ title: "Login failed. Please try again.", });
+      navigate("/");
+    } else {
+      toast({ title: "Login failed. Please try again.", });
       
-    //   return;
-    // }
+      return;
+    }
   };
 
   return (
