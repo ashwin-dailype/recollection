@@ -18,9 +18,7 @@ export async function signInAccount(user: { authToken: string }) {
       }),
     });
 
-    if (response.ok){
-      return response;
-    }
+    return response
 
   } catch (error) {
     console.log(error);

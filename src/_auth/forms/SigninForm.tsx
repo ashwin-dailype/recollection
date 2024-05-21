@@ -25,41 +25,37 @@ const SigninForm = () => {
     resolver: zodResolver(SigninValidation),
     defaultValues: {
       authToken: "",
-      // email: "",
-      // password: "",
     },
   });
 
   const handleSignin = async (user: z.infer<typeof SigninValidation>) => {
-    const session = await signInAccount(user);
+    const response = await signInAccount(user);
 
-    console.log('hiii');
-    console.log(session)
-
-    if (!session) {
+    if (!response.ok) {
       toast({ title: "Login failed. Please try again." });
       
       return;
     }
 
-    const isLoggedIn = await checkAuthUser();
+    navigate("/");
 
-    if (isLoggedIn) {
-      form.reset();
+    // const isLoggedIn = await checkAuthUser();
 
-      navigate("/");
-    } else {
-      toast({ title: "Login failed. Please try again.", });
+    // if (isLoggedIn) {
+    //   form.reset();
+
+    //   navigate("/");
+    // } else {
+    //   toast({ title: "Login failed. Please try again.", });
       
-      return;
-    }
+    //   return;
+    // }
   };
 
   return (
     <Form {...form}>
       <div className="sm:w-420 flex-center flex-col">
         <img src="/assets/images/logo.png" alt="logo" />
-        {/* <p> DailyPe</p> */}
 
         <h2 className="h3-bold md:h2-bold pt-5 sm:pt-12">
           Log in to your account
