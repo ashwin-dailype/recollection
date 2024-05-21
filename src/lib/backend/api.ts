@@ -19,6 +19,7 @@ export async function signInAccount(user: { authToken: string }) {
     });
 
     if (response.ok){
+      console.log("hiii")
       return response;
     }
 
