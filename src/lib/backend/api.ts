@@ -18,6 +18,8 @@ export async function signInAccount(user: { authToken: string }) {
       }),
     });
 
+    console.log(response)
+
     if (response.ok){
       console.log("hiii")
       return response;
