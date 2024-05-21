@@ -1,7 +1,7 @@
 import { Models } from "appwrite";
 
 // import { useToast } from "@/components/ui/use-toast";
-import { Loader, PostCard, UserCard } from "@/components/shared";
+import { Loader } from "@/components/shared";
 import { useGetRecentPosts, useGetUsers } from "@/lib/react-query/queries";
 
 const Home = () => {
@@ -42,7 +42,6 @@ const Home = () => {
             <ul className="flex flex-col flex-1 gap-9 w-full ">
               {posts?.documents.map((post: Models.Document) => (
                 <li key={post.$id} className="flex justify-center w-full">
-                  <PostCard post={post} />
                 </li>
               ))}
             </ul>
@@ -58,7 +57,6 @@ const Home = () => {
           <ul className="grid 2xl:grid-cols-2 gap-6">
             {creators?.documents.map((creator) => (
               <li key={creator?.$id}>
-                <UserCard user={creator} />
               </li>
             ))}
           </ul>
