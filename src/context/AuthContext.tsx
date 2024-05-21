@@ -2,7 +2,7 @@ import { useNavigate } from "react-router-dom";
 import { createContext, useContext, useEffect, useState } from "react";
 
 import { IUser } from "@/types";
-import { getCurrentUser } from "@/lib/backend/api";
+// import { getCurrentUser } from "@/lib/backend/api";
 
 export const INITIAL_USER = {
   id: "",
@@ -21,6 +21,16 @@ const INITIAL_STATE = {
   setIsAuthenticated: () => {},
   checkAuthUser: async () => false as boolean,
 };
+
+async function getCurrentUser() {
+  let currentUser = localStorage.getItem('currentUser');
+
+  if (currentUser) {
+    return JSON.parse(currentUser); // Assuming the stored user info is a stringified JSON
+  }
+
+  return null; // Or return a default user object if needed
+}
 
 type IContextType = {
   user: IUser;
