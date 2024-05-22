@@ -10,16 +10,16 @@ import Loader from "@/components/shared/Loader";
 import { useToast } from "@/components/ui/use-toast";
 
 import { SigninValidation } from "@/lib/validation";
-import { useSignInAccount } from "@/lib/react-query/queries";
+import { useSignInAccount } from "@/lib/react-query/queries"; // Updated import
 import { useUserContext } from "@/context/AuthContext";
 
 const SigninForm = () => {
   const { toast } = useToast();
   const navigate = useNavigate();
-  const { checkAuthUser, isLoading: isUserLoading } = useUserContext();
+  const { checkAuthUser, setAuthToken, isLoading: isUserLoading } = useUserContext();
 
   // Query
-  const { mutateAsync: signInAccount, isLoading } = useSignInAccount();
+  const signInAccountMutation = useSignInAccount();
 
   const form = useForm<z.infer<typeof SigninValidation>>({
     resolver: zodResolver(SigninValidation),
@@ -29,26 +29,25 @@ const SigninForm = () => {
   });
 
   const handleSignin = async (user: z.infer<typeof SigninValidation>) => {
-    const response = await signInAccount(user) as Response;
+    try {
+      const response = await signInAccountMutation.mutateAsync(user); // No need to await this since react-query handles it
+      if (!response.ok) {
+        toast({ title: "Login failed. Please try again." });
+        return;
+      }
 
-    if (!response.ok) {
-      toast({ title: "Login failed. Please try again." });
-      
-      return;
-    }
+      setAuthToken(user.authToken);
+      const isLoggedIn = await checkAuthUser();
 
-    navigate("/");
-
-    const isLoggedIn = await checkAuthUser();
-
-    if (isLoggedIn) {
-      form.reset();
-
-      navigate("/");
-    } else {
-      toast({ title: "Login failed. Please try again.", });
-      
-      return;
+      if (isLoggedIn) {
+        form.reset();
+        navigate("/");
+      } else {
+        toast({ title: "Login failed. Please try again." });
+      }
+    } catch (error) {
+      toast({ title: "An error occurred. Please try again." });
+      console.error(error);
     }
   };
 
@@ -80,22 +79,8 @@ const SigninForm = () => {
             )}
           />
 
-          {/* <FormField
-            control={form.control}
-            name="password"
-            render={({ field }) => (
-              <FormItem>
-                <FormLabel className="shad-form_label">Password</FormLabel>
-                <FormControl>
-                  <Input type="password" className="shad-input" {...field} />
-                </FormControl>
-                <FormMessage />
-              </FormItem>
-            )}
-          /> */}
-
           <Button type="submit" className="shad-button_primary">
-            {isLoading || isUserLoading ? (
+            {isUserLoading ? (
               <div className="flex-center gap-2">
                 <Loader /> Loading...
               </div>
