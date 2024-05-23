@@ -1,9 +1,10 @@
 import { Outlet } from "react-router-dom";
+import Topbar from "./pages/Topbar";
 
 const RootLayout = () => {
   return (
-    <div className="w-full md:flex">
-
+    <div className="w-full">
+      <Topbar />
 
       <section className="flex flex-1 h-full">
         <Outlet />
