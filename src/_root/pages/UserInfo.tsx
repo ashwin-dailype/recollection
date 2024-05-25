@@ -28,7 +28,11 @@ const UserInfo = () => {
   const [value, setValue] = useState(0);
   const [disabledMinus, setDisabledMinus] = useState(false);
   const [disabledPlus, setDisabledPlus] = useState(false);
-  const [loanData, setLoanData] = useState<{ name?: string; loan_acc_num?: string; pending_installment_num?: number } | null>(null);
+  const [loanData, setLoanData] = useState<{
+    name?: string;
+    loan_acc_num?: string;
+    pending_installment_num?: number;
+  } | null>(null);
   const [qrCode, setQrCode] = useState("");
   const [loadingInstallment, setLoadingInstallment] = useState(false);
   const [loadingNotice, setLoadingNotice] = useState(false);
@@ -54,7 +58,14 @@ const UserInfo = () => {
         }
 
         const res = await response.json();
-        var data = res.response[0];
+        console.log(res);
+        var data;
+        for (var x of res.response) {
+          if (x.loan_id == loanId) {
+            data = x;
+            break;
+          }
+        }
         data.name = data.fname;
         if (data.mname) {
           data.name += " " + data.mname;
@@ -281,8 +292,8 @@ const UserInfo = () => {
                       <span className="sr-only">Decrease</span>
                     </Button>
                     <div className="flex-1 text-center">
-                      <div className="text-7xl font-bold tracking-tighter">
-                        {value}
+                      <div className="text-5xl font-bold tracking-tighter">
+                        ₹ {value}
                       </div>
                       <div className="text-[0.70rem] uppercase text-muted-foreground">
                         Amount
