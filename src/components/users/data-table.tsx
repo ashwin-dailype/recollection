@@ -10,6 +10,7 @@ import {
   getSortedRowModel,
   useReactTable,
 } from "@tanstack/react-table";
+import { useNavigate } from "react-router-dom";
 
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
@@ -23,17 +24,32 @@ import {
   TableRow,
 } from "@/components/ui/table";
 
-interface DataTableProps<TData, TValue> {
-  columns: ColumnDef<TData, TValue>[];
+interface Payment {
+  id: string;
+  pending_installment_amt: number;
+  status: "pending" | "processing" | "success" | "failed";
+  loan_acc_num: string;
+  name: string;
+  user_id: string;
+  loan_id: string;
+}
+
+interface DataTableProps<TData extends Payment> {
+  columns: ColumnDef<TData, unknown>[];
   data: TData[];
 }
 
-export function DataTable<TData, TValue>({
+export function DataTable<TData extends Payment>({
   columns,
   data,
-}: DataTableProps<TData, TValue>) {
+}: DataTableProps<TData>) {
   const [sorting, setSorting] = React.useState<SortingState>([]);
-  const [columnFilters, setColumnFilters] = React.useState<ColumnFiltersState>([]);
+  const [columnFilters, setColumnFilters] = React.useState<ColumnFiltersState>(
+    []
+  );
+  
+  const previousButton = "<<"
+  const nextButton = ">>"
 
   const table = useReactTable({
     data,
@@ -50,21 +66,20 @@ export function DataTable<TData, TValue>({
     },
   });
 
+  const navigate = useNavigate();
+
   return (
     <div>
-      {/* Filter Inputs */}
       <div className="flex items-center py-4">
         <Input
-          placeholder="Filter by Name..."
+          placeholder="Search here..."
           value={(table.getColumn("name")?.getFilterValue() as string)?? ""}
-          onChange={(event) => 
+          onChange={(event) =>
             table.getColumn("name")?.setFilterValue(event.target.value)
           }
-          className="max-w-sm"
+          className="shad-input max-w-sm"
         />
       </div>
-
-      {/* Table Rendering */}
       <div className="rounded-md border">
         <Table>
           <TableHeader>
@@ -73,7 +88,12 @@ export function DataTable<TData, TValue>({
                 {headerGroup.headers.map((header) => {
                   return (
                     <TableHead key={header.id}>
-                      {header.isPlaceholder? null : flexRender(header.column.columnDef.header, header.getContext())}
+                      {header.isPlaceholder
+                       ? null
+                        : flexRender(
+                            header.column.columnDef.header,
+                            header.getContext()
+                          )}
                     </TableHead>
                   );
                 })}
@@ -83,9 +103,19 @@ export function DataTable<TData, TValue>({
           <TableBody>
             {table.getRowModel().rows?.length? (
               table.getRowModel().rows.map((row) => (
-                <TableRow key={row.id} data-state={row.getIsSelected() && "selected"}>
+                <TableRow
+                  key={row.id}
+                  data-state={row.getIsSelected() && "selected"}
+                  onClick={() => {
+                    const userId = row.original.user_id;
+                    const loanId = row.original.loan_id;
+                    navigate(`/user/${userId}/${loanId}`);
+                  }}
+                >
                   {row.getVisibleCells().map((cell) => (
-                    <TableCell key={cell.id}>{flexRender(cell.column.columnDef.cell, cell.getContext())}</TableCell>
+                    <TableCell key={cell.id}>
+                      {flexRender(cell.column.columnDef.cell, cell.getContext())}
+                    </TableCell>
                   ))}
                 </TableRow>
               ))
@@ -99,24 +129,22 @@ export function DataTable<TData, TValue>({
           </TableBody>
         </Table>
       </div>
-
-      {/* Pagination Buttons */}
       <div className="flex items-center justify-end space-x-2 py-4">
         <Button
-          variant="outline"
           size="sm"
           onClick={() => table.previousPage()}
           disabled={!table.getCanPreviousPage()}
+          className="shad-button_primary"
         >
-          Previous
+          {previousButton}
         </Button>
         <Button
-          variant="outline"
           size="sm"
           onClick={() => table.nextPage()}
           disabled={!table.getCanNextPage()}
+          className="shad-button_primary"
         >
-          Next
+          {nextButton}
         </Button>
       </div>
     </div>

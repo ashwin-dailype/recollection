@@ -1,15 +1,15 @@
 import { Button } from "@/components/ui/button";
 import { ColumnDef } from "@tanstack/react-table";
-import { ArrowUpDown, MoreHorizontal } from "lucide-react";
+import { ArrowUpDown } from "lucide-react";
 
-// This type is used to define the shape of our data.
-// You can use a Zod schema here if you want.
 export type Payment = {
   id: string;
-  amount: number;
+  pending_installment_amt: number;
   status: "pending" | "processing" | "success" | "failed";
-  email: string;
+  loan_acc_num: string;
   name: string;
+  user_id: string;
+  loan_id: string;
 };
 
 export const columns: ColumnDef<Payment>[] = [
@@ -26,31 +26,37 @@ export const columns: ColumnDef<Payment>[] = [
         </Button>
       );
     },
+    filterFn: (row, id, filterValues) => {
+      // Combine name and email for filtering
+      const combinedInfo = `${row.original.name} ${row.original.loan_acc_num}`;
+      let searchTerms = Array.isArray(filterValues)? filterValues : [filterValues];
+      console.log(id);
+      return searchTerms.some(term => combinedInfo.toLowerCase().includes(term.toLowerCase()));
+    },
   },
   {
-    accessorKey: "id",
-    header:"loan id"
+    accessorKey: "loan_acc_num",
+    header: "Loan account number"
   },
   {
-    accessorKey: "amount",
+    accessorKey: "pending_installment_amt",
     header: ({ column }) => {
-      // Add sorting functionality to the Amount column header
       return (
         <Button
           variant="ghost"
           onClick={() => column.toggleSorting(column.getIsSorted() === "asc")}
         >
-          Amount
+          Pending Amount
           <ArrowUpDown className="ml-2 h-4 w-4" />
         </Button>
       );
     },
     cell: ({ row }) => {
-      const amount = parseFloat(row.getValue("amount"));
+      const pending_installment_amt = parseFloat(row.getValue("pending_installment_amt"));
       const formatted = new Intl.NumberFormat("en-US", {
         style: "currency",
         currency: "INR",
-      }).format(amount);
+      }).format(pending_installment_amt);
 
       return <div className="text-right font-medium">{formatted}</div>;
     },

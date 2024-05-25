@@ -2,7 +2,7 @@ import { Routes, Route } from "react-router-dom";
 
 import {
   Home,
-  AllUsers,
+  UserInfo,
 } from "@/_root/pages";
 import AuthLayout from "./_auth/AuthLayout";
 import RootLayout from "./_root/RootLayout";
@@ -23,7 +23,7 @@ const App = () => {
         {/* private routes */}
         <Route element={<RootLayout />}>
           <Route index element={<Home />} />
-          <Route path="/all-users" element={<AllUsers />} />
+          <Route path="/user/:userId/:loanId" element={<UserInfo />} />
         </Route>
       </Routes>
 
