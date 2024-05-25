@@ -1,2 +1,2 @@
-export { default as Home } from "./Home";
-export { default as AllUsers } from "./AllUsers";
+export { Home } from "./Home";
+export { default as UserInfo } from "./UserInfo";
