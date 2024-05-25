@@ -58,7 +58,6 @@ const UserInfo = () => {
         }
 
         const res = await response.json();
-        console.log(res);
         var data;
         for (var x of res.response) {
           if (x.loan_id == loanId) {
@@ -73,7 +72,6 @@ const UserInfo = () => {
         if (data.lname) {
           data.name += " " + data.lname;
         }
-        console.log(data);
         setLoanInstallmentAmt(data.loan_installment_amt);
         setValue(data.loan_installment_amt);
         setDisabledMinus(true);
@@ -168,7 +166,6 @@ const UserInfo = () => {
   };
 
   const handleGenerate = async () => {
-    console.log("Updated Amount:", value);
     setLoadingGenerate(true); // Start loading
     try {
       const response = await fetch(import.meta.env.VITE_GENERATE_QR, {
@@ -189,7 +186,6 @@ const UserInfo = () => {
       }
 
       const data = await response.json();
-      console.log(data);
       setQrCode(data.response.dynamic_qr); // Set the QR code state
     } catch (error) {
       console.error("Error generating QR:", error);
