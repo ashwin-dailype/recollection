@@ -24,6 +24,7 @@ const UserInfo = () => {
   const { loanId } = useParams<{ loanId: string }>();
   const token = localStorage.getItem("authToken");
   const [isDrawerOpen, setIsDrawerOpen] = useState(false);
+  const [drawerType, setDrawerType] = useState<"installment" | "charge">("installment");
   const [loanInstallmentAmt, setLoanInstallmentAmt] = useState(0);
   const [value, setValue] = useState(0);
   const [disabledMinus, setDisabledMinus] = useState(false);
@@ -33,13 +34,21 @@ const UserInfo = () => {
     loan_acc_num?: string;
     pending_installment_num?: number;
   } | null>(null);
+  const [singleChargeAmt, setSingleChargeAmt] = useState(0);
+  const [chargeValue, setChargeValue] = useState(0);
+  const [disabledChargeMinus, setDisabledChargeMinus] = useState(false);
+  const [disabledChargePlus, setDisabledChargePlus] = useState(false);
+  const [chargeData, setChargeData] = useState<{
+    single_charge_amt?: number;
+    charge_count?: number;
+  } | null>(null);
   const [qrCode, setQrCode] = useState("");
   const [loadingInstallment, setLoadingInstallment] = useState(false);
   const [loadingNotice, setLoadingNotice] = useState(false);
   const [loadingGenerate, setLoadingGenerate] = useState(false);
 
   useEffect(() => {
-    const fetchData = async () => {
+    const fetchDataDetails = async () => {
       try {
         const response = await fetch(import.meta.env.VITE_GET_LOAN_DETAILS, {
           method: "POST",
@@ -58,9 +67,9 @@ const UserInfo = () => {
         }
 
         const res = await response.json();
-        var data;
-        for (var x of res.response) {
-          if (x.loan_id == loanId) {
+        let data;
+        for (let x of res.response) {
+          if (x.loan_id === loanId) {
             data = x;
             break;
           }
@@ -78,25 +87,69 @@ const UserInfo = () => {
         setDisabledPlus(false);
         setLoanData(data); // Store the fetched data
       } catch (error) {
-        console.error("Error fetching data:", error);
+        console.error("Error fetching loan details:", error);
       }
     };
 
-    fetchData();
-  }, [userId, token]);
+    const fetchChargeDetails = async () => {
+      try {
+        const response = await fetch(import.meta.env.VITE_GET_CHARGE_DETAILS, {
+          method: "POST",
+          headers: {
+            "Content-Type": "application/json",
+            Authorization: `${token}`,
+          },
+          body: JSON.stringify({
+            loan_id: loanId
+          }),
+        });
 
-  const onClick = (adjustment: number) => {
-    const newValue = value + adjustment;
-    setValue(newValue);
-    setDisabledMinus(newValue <= loanInstallmentAmt);
-    if (loanData) {
-      setDisabledPlus(
-        newValue >= (loanData.pending_installment_num || 0) * loanInstallmentAmt
-      );
+        if (!response.ok) {
+          throw new Error(`Error: ${response.statusText}`);
+        }
+
+        const res = await response.json();
+        if (res.response.total_charges){
+          const chargeData = res.response.autopay_bounce_charges
+          setSingleChargeAmt(chargeData.single_charge_amt)
+          setChargeValue(chargeData.single_charge_amt)
+          setDisabledChargeMinus(true);
+          setDisabledChargePlus(false);
+          setChargeData(chargeData)
+        }
+      } catch (error) {
+        console.error("Error fetching charge details:", error);
+      }
+    };
+
+    fetchDataDetails();
+    fetchChargeDetails();
+  }, [userId, token, loanId]);
+
+  const onClick = (adjustment: number, type: "installment" | "charge") => {
+    if (type === "installment") {
+      const newValue = value + adjustment;
+      setValue(newValue);
+      setDisabledMinus(newValue <= loanInstallmentAmt);
+      if (loanData) {
+        setDisabledPlus(
+          newValue >= (loanData.pending_installment_num || 0) * loanInstallmentAmt
+        );
+      }
+    } else if (type === "charge") {
+      const newChargeValue = chargeValue + adjustment;
+      setChargeValue(newChargeValue);
+      setDisabledChargeMinus(newChargeValue <= singleChargeAmt);
+      if (chargeData) {
+        setDisabledChargePlus(
+          newChargeValue >= (chargeData.charge_count || 0) * singleChargeAmt
+        );
+      }
     }
   };
 
-  const toggleDrawer = () => {
+  const toggleDrawer = (type: "installment" | "charge") => {
+    setDrawerType(type);
     setIsDrawerOpen(true);
   };
 
@@ -168,17 +221,27 @@ const UserInfo = () => {
   const handleGenerate = async () => {
     setLoadingGenerate(true); // Start loading
     try {
+      let payload;
+      if (drawerType === "installment"){
+        payload = {
+          user_id: userId,
+          loan_id: loanId,
+          amount: Number(value),
+        }}else{
+          payload = {
+            user_id: userId,
+            loan_id: loanId,
+            amount: Number(chargeValue),
+            payment_type: "autopay_bounce_charge"
+          }
+        }
       const response = await fetch(import.meta.env.VITE_GENERATE_QR, {
         method: "POST",
         headers: {
           "Content-Type": "application/json",
           Authorization: `${token}`,
         },
-        body: JSON.stringify({
-          user_id: userId,
-          loan_id: loanId,
-          amount: Number(value),
-        }),
+        body: JSON.stringify(payload),
       });
 
       if (!response.ok) {
@@ -215,7 +278,7 @@ const UserInfo = () => {
                 <Button
                   type="submit"
                   className="shad-button_primary w-full"
-                  onClick={() => toggleDrawer()}
+                  onClick={() => toggleDrawer("installment")}
                   disabled={loadingInstallment}>
                   {loadingInstallment ? (
                     <div className="flex-center gap-2">
@@ -233,9 +296,15 @@ const UserInfo = () => {
                 <Button
                   type="submit"
                   className="shad-button_primary w-full"
-                  disabled
-                  onClick={() => console.log("Pay the charge")}>
-                  Pay Charges
+                  onClick={() => toggleDrawer("charge")}
+                  disabled={loadingInstallment}>
+                  {loadingInstallment ? (
+                    <div className="flex-center gap-2">
+                      <Loader /> Please Wait...
+                    </div>
+                  ) : (
+                    "Pay Charges"
+                  )}
                 </Button>
               </AccordionContent>
             </AccordionItem>
@@ -262,7 +331,9 @@ const UserInfo = () => {
           <Drawer open={isDrawerOpen} onOpenChange={handleDrawerOpenChange}>
             <DrawerContent className="bg-dark-2 text-white">
               <DrawerHeader>
-                <DrawerTitle>Generate Payment QR</DrawerTitle>
+                <DrawerTitle>
+                  Generate Payment QR ({drawerType === "installment" ? "Installment" : "Charge"})
+                </DrawerTitle>
                 {qrCode && (
                   <div className="text-center mt-4 mx-auto">
                     <img
@@ -272,7 +343,7 @@ const UserInfo = () => {
                   </div>
                 )}
                 <DrawerDescription>
-                  Change installment Amount.
+                  Change {drawerType === "installment" ? "installment" : "charge"} amount.
                 </DrawerDescription>
               </DrawerHeader>
 
@@ -282,14 +353,14 @@ const UserInfo = () => {
                     <Button
                       size="icon"
                       className="shad-button_primary h-8 w-8 shrink-0 rounded-full"
-                      onClick={() => onClick(-loanInstallmentAmt)}
-                      disabled={disabledMinus}>
+                      onClick={() => onClick(drawerType === "installment" ? -loanInstallmentAmt : -singleChargeAmt, drawerType)}
+                      disabled={drawerType === "installment" ? disabledMinus : disabledChargeMinus}>
                       <Minus className="h-4 w-4" />
                       <span className="sr-only">Decrease</span>
                     </Button>
                     <div className="flex-1 text-center">
                       <div className="text-5xl font-bold tracking-tighter">
-                        ₹ {value}
+                        ₹ {drawerType === "installment" ? value : chargeValue}
                       </div>
                       <div className="text-[0.70rem] uppercase text-muted-foreground">
                         Amount
@@ -298,8 +369,8 @@ const UserInfo = () => {
                     <Button
                       size="icon"
                       className="shad-button_primary h-8 w-8 shrink-0 rounded-full"
-                      onClick={() => onClick(loanInstallmentAmt)}
-                      disabled={disabledPlus}>
+                      onClick={() => onClick(drawerType === "installment" ? loanInstallmentAmt : singleChargeAmt, drawerType)}
+                      disabled={drawerType === "installment" ? disabledPlus : disabledChargePlus}>
                       <Plus className="h-4 w-4" />
                       <span className="sr-only">Increase</span>
                     </Button>
