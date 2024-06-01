@@ -16,7 +16,7 @@ import { useUserContext } from "@/context/AuthContext";
 const SigninForm = () => {
   const { toast } = useToast();
   const navigate = useNavigate();
-  const { checkAuthUser, setAuthToken, isLoading: isUserLoading } = useUserContext();
+  const { checkAuthUser, setAuthToken } = useUserContext();
 
   // Query
   const signInAccountMutation = useSignInAccount();
@@ -30,7 +30,7 @@ const SigninForm = () => {
 
   const handleSignin = async (user: z.infer<typeof SigninValidation>) => {
     try {
-      const response = await signInAccountMutation.mutateAsync(user); // No need to await this since react-query handles it
+      const response = await signInAccountMutation.mutateAsync(user);
       if (!response.ok) {
         toast({ title: "Login failed. Please try again." });
         return;
@@ -80,7 +80,7 @@ const SigninForm = () => {
           />
 
           <Button type="submit" className="shad-button_primary">
-            {isUserLoading ? (
+            {signInAccountMutation.isLoading ? (
               <div className="flex-center gap-2">
                 <Loader /> Loading...
               </div>
