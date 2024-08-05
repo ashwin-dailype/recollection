@@ -110,7 +110,7 @@ const UserInfo = () => {
 
         const res = await response.json();
         if (res.response.total_charges){
-          const chargeData = res.response.autopay_bounce_charges
+          const chargeData = res.response.autopay_bounce_charges || res.response.autopay_bounce_charge;
           setSingleChargeAmt(chargeData.single_charge_amt)
           setChargeValue(chargeData.single_charge_amt)
           setDisabledChargeMinus(true);
@@ -129,6 +129,7 @@ const UserInfo = () => {
   const onClick = (adjustment: number, type: "installment" | "charge") => {
     if (type === "installment") {
       const newValue = value + adjustment;
+      console.log(`Adjusting installment value by ${adjustment}. New value: ${newValue}`);
       setValue(newValue);
       setDisabledMinus(newValue <= loanInstallmentAmt);
       if (loanData) {
@@ -138,6 +139,7 @@ const UserInfo = () => {
       }
     } else if (type === "charge") {
       const newChargeValue = chargeValue + adjustment;
+      console.log(`Adjusting charge value by ${adjustment}. New charge value: ${newChargeValue}`);
       setChargeValue(newChargeValue);
       setDisabledChargeMinus(newChargeValue <= singleChargeAmt);
       if (chargeData) {
