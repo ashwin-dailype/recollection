@@ -33,6 +33,7 @@ const UserInfo = () => {
     name?: string;
     loan_acc_num?: string;
     pending_installment_num?: number;
+    lender_id: string;
   } | null>(null);
   const [singleChargeAmt, setSingleChargeAmt] = useState(0);
   const [chargeValue, setChargeValue] = useState(0);
@@ -228,11 +229,13 @@ const UserInfo = () => {
         payload = {
           user_id: userId,
           loan_id: loanId,
+          lender_id: loanData?.lender_id, // Added lender_id
           amount: Number(value),
         }}else{
           payload = {
             user_id: userId,
             loan_id: loanId,
+            lender_id: loanData?.lender_id, // Added lender_id
             amount: Number(chargeValue),
             payment_type: "autopay_bounce_charge"
           }
